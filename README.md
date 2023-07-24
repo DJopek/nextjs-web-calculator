@@ -1,4 +1,4 @@
-# React web calculator
+# Next.js web calculator
 Fun learning project.
 
 ## How to run it?
