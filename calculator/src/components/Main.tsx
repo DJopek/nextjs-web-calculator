@@ -1,17 +1,49 @@
 import Output from "./Output";
 import NumberButton from "./NumberButton";
 import FunctionButton from "./FunctionButton";
-import NullButton from "./NullButton";
+import EqualButton from "./EqualButton";
 import { useState } from "react";
 
 const Main = () => {
 
-    const [problem, setProblem] = useState<string>("")
+    const [problem, setProblem] = useState<string>("");
 
     const displayClick = (event: React.MouseEvent<HTMLButtonElement>, symbol: string) => {
         const newProblem: string = problem + symbol;
         setProblem(newProblem);
-        console.log(problem)
+    }
+
+    const calculate = (event: React.MouseEvent<HTMLButtonElement>, problem: string) => {
+
+        const expression: string = problem;
+        // const numbersAndOperators: string[] = expression.split(/([+\-*/])/);
+
+        // The resulting array will contain numbers and operators as separate elements
+        // console.log(numbersAndOperators); // Output: ["129", "+", "3293", "*", "2"]
+
+        // const numbersAndOperators = expression.split(/([+\-*/])/).filter((item) => item !== '');
+        // console.log(numbersAndOperators); // Output: ["129", "+", "3293", "*", "2"]
+        // const theFirstItem = numbersAndOperators[1] ?? "";
+        // setProblem(theFirstItem)
+
+        const solution = eval(problem);
+
+        // const justNumbers = numbersAndOperators.map((sign, index) => (numbersAndOperators[2*index]));
+
+
+        // const justSigns = numbersAndOperators.map((sign, index) => (numbersAndOperators[2*index + 1]))
+
+        // const mulitiplicationDivisionIndex: number[] = [];
+        
+        // for (let i = 0; i < justSigns.length; i++) {
+        //     if (justSigns[i] === "*" || justSigns[i] === "/") {
+        //         mulitiplicationDivisionIndex.push(i);
+        //     }
+        // };
+
+        setProblem(solution);
+
+        //nejaký regex, nejaké ifs možno loop pre každé párne a pre každé nepárne
     }
 
     return(
@@ -31,13 +63,12 @@ const Main = () => {
                     <NumberButton text="3" displayClick={displayClick}/>
                     <NumberButton text="2" displayClick={displayClick}/>
                     <NumberButton text="1" displayClick={displayClick}/>
-                    <FunctionButton text="x" displayClick={displayClick}/>
+                    <FunctionButton text="*" displayClick={displayClick}/>
                 </div>
                 <div className="grid grid-cols-4">
-                    <FunctionButton text="," displayClick={displayClick}/>
+                    <FunctionButton text="." displayClick={displayClick}/>
                     <NumberButton text="0" displayClick={displayClick}/>
-                    {/* <NullButton text="0"/> */}
-                    <FunctionButton text="=" displayClick={displayClick}/>
+                    <EqualButton text="=" problem={problem} calculate={calculate}/>
                     <FunctionButton text="/" displayClick={displayClick}/>
                 </div>
             </div>
