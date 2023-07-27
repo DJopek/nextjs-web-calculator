@@ -2,11 +2,12 @@ import Output from "./Output";
 import NumberButton from "./NumberButton";
 import FunctionButton from "./FunctionButton";
 import EqualButton from "./EqualButton";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Main = () => {
 
     const [problem, setProblem] = useState<string>("");
+    // const [newProblem, setNewProblem] = useState<string[]>([""]);
 
     const displayClick = (event: React.MouseEvent<HTMLButtonElement>, symbol: string) => {
         const newProblem: string = problem + symbol;
@@ -15,18 +16,22 @@ const Main = () => {
 
     const calculate = (event: React.MouseEvent<HTMLButtonElement>, problem: string) => {
 
-        const expression: string = problem;
+        const solution = eval(problem);
+
+        setProblem(solution);
+
+        //custom parsing, maybe it won't work, maybe it is just a waste of time or it is ineffective, but it is a fun puzzle (not working tho :D )
+
+        // const expression: string = problem;
         // const numbersAndOperators: string[] = expression.split(/([+\-*/])/);
 
-        // The resulting array will contain numbers and operators as separate elements
-        // console.log(numbersAndOperators); // Output: ["129", "+", "3293", "*", "2"]
+        // // The resulting array will contain numbers and operators as separate elements
+        // // console.log(numbersAndOperators); // Output: ["129", "+", "3293", "*", "2"]
 
-        // const numbersAndOperators = expression.split(/([+\-*/])/).filter((item) => item !== '');
+        // // const numbersAndOperators = expression.split(/([+\-*/])/).filter((item) => item !== '');
         // console.log(numbersAndOperators); // Output: ["129", "+", "3293", "*", "2"]
-        // const theFirstItem = numbersAndOperators[1] ?? "";
-        // setProblem(theFirstItem)
-
-        const solution = eval(problem);
+        // // const theFirstItem = numbersAndOperators[1] ?? "";
+        // // setProblem(theFirstItem)
 
         // const justNumbers = numbersAndOperators.map((sign, index) => (numbersAndOperators[2*index]));
 
@@ -41,10 +46,70 @@ const Main = () => {
         //     }
         // };
 
-        setProblem(solution);
+        // const newProblemArrayTemp: string[] = [];
 
-        //nejaký regex, nejaké ifs možno loop pre každé párne a pre každé nepárne
+        // for (let i = 0; i < numbersAndOperators.length; i++) {
+        //     if (numbersAndOperators[i] === "/") {
+        //         newProblemArrayTemp.push("*");
+
+        //         if (i + 1 < numbersAndOperators.length) {
+        //             newProblemArrayTemp.push((1 / parseFloat(numbersAndOperators[i + 1] ?? "")).toString());
+        //             i++;
+        //           }
+
+        //     } else {
+        //         newProblemArrayTemp.push(numbersAndOperators[i] ?? "")
+        //     }
+        // };
+
+        // const newProblemEmptyArray: string[] = [];
+
+        // for (let i = 0; i < newProblemArrayTemp.length; i++) {
+
+        //     if (newProblemArrayTemp[i] === "-") {
+        //         newProblemEmptyArray.push("+");
+
+        //         if (i + 1 < newProblemArrayTemp.length) {
+        //             newProblemEmptyArray.push("-" + newProblemArrayTemp[i + 1]);
+        //             i++;
+        //           }
+
+        //     } else {
+        //         newProblemEmptyArray.push(newProblemArrayTemp[i] ?? "")
+        //     }
+        // }
+
+        // setNewProblem(newProblemEmptyArray)
+
+        // const partialResult = [];
+
+        // for (let i = 0; i < newProblemEmptyArray.length; i++) {
+        //     if (i + 1 <= newProblemEmptyArray.length && newProblemEmptyArray[i] === "*") {
+        //         partialResult.push((parseFloat(newProblemEmptyArray[i - 1] ?? "") * parseFloat(newProblemEmptyArray[i + 1] ?? "")).toString())
+        //     } else if (newProblemEmptyArray[i] != "+" && (newProblemEmptyArray[i + 2] != "*" || newProblemEmptyArray[i + 1] != "*") && newProblemEmptyArray[i + 1] === "+") {
+        //         partialResult.push(newProblemEmptyArray[i])
+        //     }
+        // }
+        
+        // console.log("partial result: " + partialResult);
+
+        // let result = parseFloat(partialResult[0] ?? "");
+        
+        // for (let i = 1; i < partialResult.length; i++) {
+
+        //     result += parseFloat(partialResult[i] ?? "");
+
+        //     console.log(result);
+        // }
+
+        // setProblem(result.toString())
+
+        setProblem(solution);
     }
+
+    // useEffect (() => {
+    //     console.log(newProblem);
+    // }, [newProblem])
 
     return(
         <section className="bg-[#2F343F] w-full h-full flex flex-col min-h-[90vh] items-center">
