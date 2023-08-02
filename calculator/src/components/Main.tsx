@@ -7,7 +7,9 @@ import { useEffect, useState } from "react";
 const Main = () => {
 
     const [problem, setProblem] = useState<string>("");
-    // const [newProblem, setNewProblem] = useState<string[]>([""]);
+    const [newProblem, setNewProblem] = useState<string[]>([""]);
+
+    let multiplication = "1";
 
     const displayClick = (event: React.MouseEvent<HTMLButtonElement>, symbol: string) => {
         const newProblem: string = problem + symbol;
@@ -20,96 +22,110 @@ const Main = () => {
 
         setProblem(solution);
 
-        //custom parsing, maybe it won't work, maybe it is just a waste of time or it is ineffective, but it is a fun puzzle (not working tho :D )
+        //custom parsing, maybe it won't work, maybe it is just a waste of time or it is ineffective, but it is a fun puzzle
 
-        // const expression: string = problem;
-        // const numbersAndOperators: string[] = expression.split(/([+\-*/])/);
+        const expression: string = problem;
+        const numbersAndOperators: string[] = expression.split(/([+\-*/])/);
 
-        // // The resulting array will contain numbers and operators as separate elements
-        // // console.log(numbersAndOperators); // Output: ["129", "+", "3293", "*", "2"]
+        console.log(numbersAndOperators);
 
-        // // const numbersAndOperators = expression.split(/([+\-*/])/).filter((item) => item !== '');
-        // console.log(numbersAndOperators); // Output: ["129", "+", "3293", "*", "2"]
-        // // const theFirstItem = numbersAndOperators[1] ?? "";
-        // // setProblem(theFirstItem)
+        const newProblemArrayTemp: string[] = [];
 
-        // const justNumbers = numbersAndOperators.map((sign, index) => (numbersAndOperators[2*index]));
+        for (let i = 0; i < numbersAndOperators.length; i++) {
+            if (numbersAndOperators[i] === "/") {
+                newProblemArrayTemp.push("*");
 
+                if (i + 1 < numbersAndOperators.length) {
+                    newProblemArrayTemp.push((1 / parseFloat(numbersAndOperators[i + 1] ?? "")).toString());
+                    i++;
+                  }
 
-        // const justSigns = numbersAndOperators.map((sign, index) => (numbersAndOperators[2*index + 1]))
+            } else {
+                newProblemArrayTemp.push(numbersAndOperators[i] ?? "")
+            }
+        };
 
-        // const mulitiplicationDivisionIndex: number[] = [];
+        const newProblemEmptyArray: string[] = [];
+
+        for (let i = 0; i < newProblemArrayTemp.length; i++) {
+
+            if (newProblemArrayTemp[i] === "-") {
+                newProblemEmptyArray.push("+");
+
+                if (i + 1 < newProblemArrayTemp.length) {
+                    newProblemEmptyArray.push("-" + newProblemArrayTemp[i + 1]);
+                    i++;
+                  }
+
+            } else {
+                newProblemEmptyArray.push(newProblemArrayTemp[i] ?? "")
+            }
+        }
+
+        setNewProblem(newProblemEmptyArray)
+
+        const partialResult = [];
+
+        for (let i = 1; i < newProblemEmptyArray.length; i += 2) {
+
+            if (newProblemEmptyArray[i] === "+") {
+
+                if (newProblemEmptyArray[i] === "+" && newProblemEmptyArray[i + 2] == undefined){
+                    partialResult.push(newProblemEmptyArray[i + 1])
+                    console.log("pushing: " + newProblemEmptyArray[i + 1])
+                } else if (newProblemEmptyArray[i] === "+" && (newProblemEmptyArray[i - 2] === "+" || newProblemEmptyArray[i - 2] == undefined || newProblemEmptyArray[i + 2] == undefined) && newProblemEmptyArray[i - 2] != "*") {
+                    partialResult.push(newProblemEmptyArray[i - 1])
+                    console.log("pushing: " + newProblemEmptyArray[i-1])
+                }
+            
+            }
+
+            if (newProblemEmptyArray [i] === "*") {
+
+                if ((newProblemEmptyArray[i - 2] === "+" && newProblemEmptyArray[i] === "*") || (newProblemEmptyArray[i - 2] == undefined && newProblemEmptyArray[i] === "*")) {
+                    multiplication = newProblemEmptyArray[i - 1] ?? ""
+                    console.log("start of multiplication:" + multiplication)
+                    if (newProblemEmptyArray[i] === "*" && (newProblemEmptyArray[i + 2] === "+" || newProblemEmptyArray[i + 2] == undefined)) {
+                        multiplication = (parseFloat(multiplication) * parseFloat(newProblemEmptyArray[i + 1] ?? "")).toString();
+                        partialResult.push(multiplication)
+                        console.log("pushing end of multiplication:" + multiplication)
+                    }
+                } else if (newProblemEmptyArray[i - 2] === "*" && newProblemEmptyArray[i + 2] === "*") {
+                    multiplication = (parseFloat(multiplication) * parseFloat(newProblemEmptyArray[i - 1] ?? "")).toString()
+                    console.log(newProblemEmptyArray[i - 1])
+                } else if (newProblemEmptyArray[i] === "*" && (newProblemEmptyArray[i + 2] === "+" || newProblemEmptyArray[i + 2] == undefined)) {
+                    multiplication = (parseFloat(multiplication) * parseFloat(newProblemEmptyArray[i-1] ?? "") * parseFloat(newProblemEmptyArray[i+1] ?? "")).toString()
+                    partialResult.push(multiplication)
+                    console.log("pushed multiplication is" + multiplication)
+                    multiplication = "1"
+
+                }
+                
+            }
+
+            console.log("multiplication:" + multiplication)
+            
+        }
+
+        console.log("partial result: " + partialResult);
+
+        let result = parseFloat(partialResult[0] ?? "");
         
-        // for (let i = 0; i < justSigns.length; i++) {
-        //     if (justSigns[i] === "*" || justSigns[i] === "/") {
-        //         mulitiplicationDivisionIndex.push(i);
-        //     }
-        // };
+        for (let i = 1; i < partialResult.length; i++) {
 
-        // const newProblemArrayTemp: string[] = [];
+            result += parseFloat(partialResult[i] ?? "");
 
-        // for (let i = 0; i < numbersAndOperators.length; i++) {
-        //     if (numbersAndOperators[i] === "/") {
-        //         newProblemArrayTemp.push("*");
+            console.log(result);
+        }
 
-        //         if (i + 1 < numbersAndOperators.length) {
-        //             newProblemArrayTemp.push((1 / parseFloat(numbersAndOperators[i + 1] ?? "")).toString());
-        //             i++;
-        //           }
+        setProblem(result.toString())
 
-        //     } else {
-        //         newProblemArrayTemp.push(numbersAndOperators[i] ?? "")
-        //     }
-        // };
-
-        // const newProblemEmptyArray: string[] = [];
-
-        // for (let i = 0; i < newProblemArrayTemp.length; i++) {
-
-        //     if (newProblemArrayTemp[i] === "-") {
-        //         newProblemEmptyArray.push("+");
-
-        //         if (i + 1 < newProblemArrayTemp.length) {
-        //             newProblemEmptyArray.push("-" + newProblemArrayTemp[i + 1]);
-        //             i++;
-        //           }
-
-        //     } else {
-        //         newProblemEmptyArray.push(newProblemArrayTemp[i] ?? "")
-        //     }
-        // }
-
-        // setNewProblem(newProblemEmptyArray)
-
-        // const partialResult = [];
-
-        // for (let i = 0; i < newProblemEmptyArray.length; i++) {
-        //     if (i + 1 <= newProblemEmptyArray.length && newProblemEmptyArray[i] === "*") {
-        //         partialResult.push((parseFloat(newProblemEmptyArray[i - 1] ?? "") * parseFloat(newProblemEmptyArray[i + 1] ?? "")).toString())
-        //     } else if (newProblemEmptyArray[i] != "+" && (newProblemEmptyArray[i + 2] != "*" || newProblemEmptyArray[i + 1] != "*") && newProblemEmptyArray[i + 1] === "+") {
-        //         partialResult.push(newProblemEmptyArray[i])
-        //     }
-        // }
-        
-        // console.log("partial result: " + partialResult);
-
-        // let result = parseFloat(partialResult[0] ?? "");
-        
-        // for (let i = 1; i < partialResult.length; i++) {
-
-        //     result += parseFloat(partialResult[i] ?? "");
-
-        //     console.log(result);
-        // }
-
-        // setProblem(result.toString())
-
-        setProblem(solution);
+        // setProblem(solution);
     }
 
-    // useEffect (() => {
-    //     console.log(newProblem);
-    // }, [newProblem])
+    useEffect (() => {
+        console.log(newProblem);
+    }, [newProblem])
 
     return(
         <section className="bg-[#2F343F] w-full h-full flex flex-col min-h-[90vh] items-center">
